@@ -1,5 +1,6 @@
 from core.base import LogLineParser, LogRecord
 
+
 class DjangoRequestParser(LogLineParser):
     def parse_line(self, line: str) -> LogRecord | None:
         parts = line.split()
@@ -10,6 +11,10 @@ class DjangoRequestParser(LogLineParser):
             timestamp = f"{parts[0]} {parts[1]}"
             level = parts[2]
             logger = parts[3].rstrip(":")
+
+            if logger != "django.request":
+                return None
+
             message = " ".join(parts[4:])
             handler = next((p for p in parts if p.startswith("/")), None)
 
