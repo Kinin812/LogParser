@@ -47,7 +47,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. **Запустить анализ логов**:
+4. **Запустить анализ логов (прописать путь к логам)**:
 
 ```bash
 python -m log_analizer.main app1.log app2.log --report handlers
