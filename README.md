@@ -1,19 +1,35 @@
 # LogAnalyzer
 
-**LogAnalyzer** — это CLI-инструмент для анализа логов Django-приложения с возможностью генерации настраиваемых отчётов.
+**LogAnalyzer** — это CLI-инструмент для анализа логов с возможностью генерации настраиваемых отчётов.
 
 ---
 
 ## Структура проекта
 
 ```
-log_analizer/
-├── cli.py                 # CLI-интерфейс
-├── main.py                # Точка входа
-├── core/                  # Бизнес-логика: парсеры, сборщики, фабрика отчётов
-├── reports/               # Реализации конкретных отчётов
-├── tests/                 # Юнит-тесты
-└── requirements.txt       # Зависимости
+LogParser/
+├── log_analizer/
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── parser.py
+│   │   └── report_factory.py
+│   ├── reports/
+│   │   ├── plugins/
+│   │   │   ├── __init__.py
+│   │   │   └── django_handlers.py
+│   │   └── __init__.py
+│   ├── tests/
+│   │   ├── __init__.py
+│   │   ├── test_log_processor.py
+│   │   ├── test_parser.py
+│   │   └── test_plugin.py
+│   ├── __init__.py
+│   └── main.py
+├── README.md
+├── pytest.ini
+└── requirements.txt
+
 ```
 
 ---
@@ -61,15 +77,13 @@ python -m log_analizer.main app1.log app2.log --report handlers
 
 ---
 
-## Тестирование и покрытие
+## Тестирование
 
-Запуск всех тестов с покрытием:
+Запуск всех тестов:
 
 ```bash
 pytest
 ```
-
-Отчёт в терминале + HTML-отчёт (в папке `htmlcov/`).
 
 ---
 
@@ -77,33 +91,11 @@ pytest
 
 Чтобы добавить новый тип отчёта:
 
-1. Создайте новый файл в `reports/`, реализующий метод `print()`.
-2. Зарегистрируйте его в `core/report_factory.py`.
+Создайте новый файл в `reports/plugins`, реализующий классы, наследующиеся от абстрактных:
+`LogRecord`,
+`BaseStatsCollector`,
+`BaseLineParser`,
+`BaseReport`,
+.
 
 ---
-
-LogParser/
-├── log_analizer/
-│ ├── core/
-│ │ ├── __init__.py
-│ │ ├── base.py
-│ │ ├── parser.py
-│ │ ├── report_factory.py
-│ │ └── stats.py
-│ ├── reports/
-│ │ ├── plugins/
-│ │ │ ├── __init__.py
-│ │ │ └── handlers_report.py
-│ │ └── __init__.py
-│ ├── tests/
-│ │ ├── __init__.py
-│ │ └── test_main.py
-│ ├── __init__.py
-│ ├── app1.log
-│ ├── app2.log
-│ ├── app3.log
-│ └── main.py
-├── README.md
-├── pytest.ini
-├── requirements.txt
-└── setup.cfg

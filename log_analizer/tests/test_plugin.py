@@ -2,7 +2,7 @@ import pytest
 
 from log_analizer.reports.plugins.django_handlers import (
     HandlersCollector,
-    HandlersLogRecord,
+    HandlersBaseLogRecord,
     Handlers,
     HandlersParser,
 )
@@ -10,14 +10,20 @@ from log_analizer.reports.plugins.django_handlers import (
 
 @pytest.fixture
 def parser():
+    """
+    Возвращает экземпляр парсера для обработки строк логов.
+    """
     return HandlersParser()
 
 
 def test_parse_valid_django_request(parser):
+    """
+    Тестирует парсинг корректной строки с запросом.
+    """
     line = "2024-04-28 10:00:00 INFO django.request: GET /api/v1/items/ HTTP/1.1"
     record = parser.parse_line(line)
 
-    assert isinstance(record, HandlersLogRecord)
+    assert isinstance(record, HandlersBaseLogRecord)
     assert record.timestamp == "2024-04-28 10:00:00"
     assert record.level == "INFO"
     assert record.logger == "django.request"
@@ -25,6 +31,9 @@ def test_parse_valid_django_request(parser):
 
 
 def test_parse_other_logger_returns_none(parser):
+    """
+    Проверяет, что строка с неверным логгером возвращает None.
+    """
     line = "2024-04-28 10:00:00 ERROR other.logger: Something went wrong"
     record = parser.parse_line(line)
 
@@ -32,6 +41,9 @@ def test_parse_other_logger_returns_none(parser):
 
 
 def test_parse_incomplete_line_returns_none(parser):
+    """
+    Проверяет, что неполная строка возвращает None.
+    """
     line = "Too short"
     record = parser.parse_line(line)
 
@@ -40,11 +52,17 @@ def test_parse_incomplete_line_returns_none(parser):
 
 @pytest.fixture
 def collector():
+    """
+    Возвращает экземпляр коллектора для статистики обработанных записей.
+    """
     return HandlersCollector()
 
 
 def test_add_valid_record(collector):
-    record = HandlersLogRecord(
+    """
+    Проверяет, что запись с правильными данными добавляется в статистику.
+    """
+    record = HandlersBaseLogRecord(
         timestamp="2024-04-28 10:00:00",
         level="INFO",
         logger="django.request",
@@ -57,7 +75,10 @@ def test_add_valid_record(collector):
 
 
 def test_ignore_record_with_wrong_logger(collector):
-    record = HandlersLogRecord(
+    """
+    Проверяет, что запись с логгером "django.security" не добавляется в статистику.
+    """
+    record = HandlersBaseLogRecord(
         timestamp="2024-04-28 10:00:00",
         level="ERROR",
         logger="django.security",
@@ -70,7 +91,10 @@ def test_ignore_record_with_wrong_logger(collector):
 
 
 def test_ignore_record_without_handler(collector):
-    record = HandlersLogRecord(
+    """
+    Проверяет, что запись без значения handler не добавляется в статистику.
+    """
+    record = HandlersBaseLogRecord(
         timestamp="2024-04-28 10:00:00",
         level="WARNING",
         logger="django.request",
@@ -83,6 +107,9 @@ def test_ignore_record_without_handler(collector):
 
 
 def test_merge_multiple_stats():
+    """
+    Проверяет, что несколько наборов статистик сливаются правильно.
+    """
     collector = HandlersCollector()
 
     stats_list = [
@@ -98,6 +125,9 @@ def test_merge_multiple_stats():
 
 
 def test_generate_report_output():
+    """
+    Проверяет, что отчет правильно генерирует информацию о запросах и уровнях логирования.
+    """
     stats = {
         "/api/v1/products/": {"INFO": 5, "ERROR": 2},
         "/api/v1/orders/": {"WARNING": 1},

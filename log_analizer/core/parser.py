@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import TypeVar
 
-from .base import BaseLineParser, LogRecord
+from .base import BaseLineParser, BaseLogRecord
 
-T = TypeVar("T", bound=LogRecord)
+T = TypeVar("T", bound=BaseLogRecord)
 
 
 class LogParser:

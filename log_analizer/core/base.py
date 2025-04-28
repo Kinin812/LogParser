@@ -5,7 +5,7 @@ from typing import TypeVar
 
 
 @dataclass
-class LogRecord:
+class BaseLogRecord:
     """
     Класс для представления записи лога.
     """
@@ -19,7 +19,7 @@ class BaseLineParser(ABC):
     Абстрактный класс для парсера строк лога.
     """
 
-    T = TypeVar("T", bound=LogRecord)
+    T = TypeVar("T", bound=BaseLogRecord)
 
     @abstractmethod
     def parse_line(self, line: str) -> T | None:
@@ -73,7 +73,7 @@ class BaseStatsCollector(ABC):
     Абстрактный класс для сбора статистики по лог-записям.
     """
 
-    T = TypeVar("T", bound=LogRecord)
+    T = TypeVar("T", bound=BaseLogRecord)
 
     def __init__(self):
         self.stats = defaultdict(lambda: defaultdict(int))

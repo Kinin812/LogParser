@@ -3,13 +3,13 @@ from dataclasses import dataclass
 from io import StringIO
 from typing import TypeVar
 
-from core.base import BaseReport, BaseLineParser, LogRecord, BaseStatsCollector
+from core.base import BaseReport, BaseLineParser, BaseLogRecord, BaseStatsCollector
 
-T = TypeVar("T", bound=LogRecord)
+T = TypeVar("T", bound=BaseLogRecord)
 
 
 @dataclass
-class HandlersLogRecord(LogRecord):
+class HandlersBaseLogRecord(BaseLogRecord):
     """
     Расширение базового класса LogRecord для хранения данных о логах,
     специфичных для отчёта.
@@ -25,7 +25,7 @@ class HandlersCollector(BaseStatsCollector):
     Класс для сбора статистики по лог-записям.
     """
 
-    def add_record(self, record: HandlersLogRecord):
+    def add_record(self, record: HandlersBaseLogRecord):
         """
         Добавляет запись в статистику, если она подходит по условиям.
         """
@@ -54,7 +54,7 @@ class HandlersParser(BaseLineParser):
     Парсер для обработки строк логов и преобразования их в объект HandlersLogRecord.
     """
 
-    def parse_line(self, line: str) -> HandlersLogRecord | None:
+    def parse_line(self, line: str) -> HandlersBaseLogRecord | None:
         """
         Разбирает строку лога и возвращает объект HandlersLogRecord с извлечёнными данными.
         """
@@ -73,7 +73,7 @@ class HandlersParser(BaseLineParser):
             message = " ".join(parts[4:])
             handler = next((p for p in parts if p.startswith("/")), None)
 
-            return HandlersLogRecord(
+            return HandlersBaseLogRecord(
                 timestamp=timestamp,
                 level=level,
                 logger=logger,
