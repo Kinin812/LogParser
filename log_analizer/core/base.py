@@ -99,3 +99,6 @@ class BaseStatsCollector(ABC):
         Объединяет список статистик в одну.
         """
         pass
+
+    def print(self):
+        pass

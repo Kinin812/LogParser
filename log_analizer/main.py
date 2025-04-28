@@ -1,7 +1,6 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import List
 
 from core.report_factory import get_report
 from reports.plugins import ALL_REPORTS, load_plugin_reports
@@ -14,11 +13,11 @@ class LogAnalyzer:
     Класс для анализа логов и генерации отчетов.
     """
 
-    def __init__(self, log_files: List[Path], report_name: str) -> None:
+    def __init__(self, log_files: list[Path], report_name: str) -> None:
         """
         Инициализирует анализатор логов.
         """
-        self.log_files: List[Path] = log_files
+        self.log_files: list[Path] = log_files
         self.report_name: str = report_name
 
     def validate_files(self) -> None:
