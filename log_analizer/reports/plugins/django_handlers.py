@@ -87,7 +87,7 @@ class HandlersParser(BaseLineParser):
             return None
 
 
-class HandlersReport(BaseReport):
+class Handlers(BaseReport):
     """
     Отчёт по количеству запросов на каждый хендлер Django-приложения с разбивкой по уровням логов.
     """
