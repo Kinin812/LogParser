@@ -1,15 +1,27 @@
 from pathlib import Path
-from core.base import LogLineParser, LogRecord
+from typing import TypeVar
+
+from .base import BaseLineParser, LogRecord
+
+T = TypeVar("T", bound=LogRecord)
+
 
 class LogParser:
-    def __init__(self, path: Path, line_parser: LogLineParser):
+    """
+    Класс для парсинга лог-файлов.
+    """
+
+    def __init__(self, path: Path, line_parser: BaseLineParser):
         self.path = path
         self.line_parser = line_parser
 
-    def parse(self) -> list[LogRecord]:
+    def parse(self) -> list[T]:
+        """
+        Парсит лог-файл, возвращая список объектов LogRecord.
+        """
         records = []
 
-        with open(self.path, 'r') as file:
+        with open(self.path, "r") as file:
             for line in file:
                 record = self.line_parser.parse_line(line)
                 if record:
